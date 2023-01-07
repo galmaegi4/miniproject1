@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+crossorigin="anonymous"></script>
+
+<title>page1</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+* {
+font-family: 'Noto Serif KR', serif;
+}
+.mypic {
+width: 100%;
+height: 300px;
+
+background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://p4.wallpaperbetter.com/wallpaper/918/928/924/iu-k-pop-hd-wallpaper-preview.jpg");
+background-position: center 30%;
+background-size: cover;
+
+color: white;
+
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+}
+
+.mypost {
+width: 95%;
+max-width: 500px;
+margin: 20px auto 20px auto;
+
+box-shadow: 0px 0px 3px 0px black;
+padding: 20px;
+}
+
+.mypost > button {
+margin-top: 15px;
+}
+
+.mycards {
+width: 95%;
+max-width: 500px;
+margin: auto;
+}
+
+.mycards > .card {
+margin-top: 10px;
+margin-bottom: 10px;
+}
+
+.myarticle {
+  width: 95%;
+  padding: 20px;
+
+
+}
+
+
+</style>
+<script>
+$(document).ready(function(){
+  let page_url = window.location.href
+  let url_list = page_url.split('/')
+  let id_val = url_list[url_list.length -1]
+
+  $.ajax({
+  type: "GET",
+  url: `/page1/persnal/${id_val}`,
+  data: {},
+  success: function (response) {
+    let rows = response['member'][0]
+
+    let name = rows['name']
+    let mbti = rows['mbti']
+    let blog_url = rows['blog_url']
+    let myadvantage = rows['myadvantage']
+    let mystyle = rows['mystyle']
+    let introduction = rows['introduction']
+
+    let temp_title = `<h1>${name}의 페이지</h1>`
+    $('#mypic').append(temp_title)
+
+    let temp_page = `<div>
+      <p>나의 이름</p>
+      <p>${name}</p>
+      <p>나의 mbti</p>
+      <p>${mbti}</p>
+      <p>나의 블로그 주소</p>
+      <p>${blog_url}</p>
+      <p>나의 장점</p>
+      <p>${myadvantage}</p>
+      <p>나의 협업 스타일</p>
+      <p>${mystyle}</p>
+      <p>짧막한 자기소개</p>
+      <p>${introduction}</p>
+      </div>`
+    $('#mypage').append(temp_page)
+  }
+});
+
+  show_comment(id_val)
+});
+function show_comment(id_val){
+    $.ajax({
+        type: "GET",
+        url: `/page1/comment/${id_val}`,
+        data: {},
+        success: function (response) {
+          console.log(response)
+          rows = response['data']
+          for (let i = 0; i < rows.length; i++){
+            let comment = rows[i]['comment']
+            let temp_html = `<p>${comment}</p>`
+            $('#mycomment').append(temp_html)
+          }
+        }
+    });
+}
+
+function save_comment(){
+    let page_url = window.location.href
+    let url_list = page_url.split('/')
+    let id_val = url_list[url_list.length -1]
+
+    let comment = $('#comment').val()
+
+    $.ajax({
+        type: 'POST',
+        url: '/page1/comment',
+        data: {id_give:id_val ,comment_give: comment},
+        success: function (response) {
+            alert(response['msg'])
+            window.location.reload()
+        }
+    })
+}
+
+
+</script>
+</head>
+<body>
+<div class="mypic" id="mypic">
+</div>
+  <section>
+    <article class="myarticle">
+      <div id="mypage" class="mypage">
+      </div>
+      <div>
+        <hr>
+        <hr>
+        <p>댓글</p>
+      </div>
+      <div class="mycomment" id="mycomment">
+      </div>
+      <div class="comment-box">
+          <div class="form-floating">
+            <textarea  id="comment" class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+            <label for="floatingTextarea2">Comment</label>
+              <button onclick="save_comment()"type="button" class="btn btn-outline-secondary">등록하기</button>
+          </div>
+      </div>
+    </article>
+  </section>
+</body>
+</html>
