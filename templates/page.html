@@ -12,7 +12,7 @@ integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLAS
 integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
 crossorigin="anonymous"></script>
 
-<title>page1</title>
+<title>page</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap" rel="stylesheet">
 <style>
@@ -74,9 +74,47 @@ $(document).ready(function(){
   let url_list = page_url.split('/')
   let id_val = url_list[url_list.length -1]
 
+  pagedata(id_val)
+  show_comment(id_val)
+});
+function show_comment(id_val){
+    $.ajax({
+        type: "GET",
+        url: `/page/comment/${id_val}`,
+        data: {},
+        success: function (response) {
+          console.log(response)
+          rows = response['data']
+          for (let i = 0; i < rows.length; i++){
+            let comment = rows[i]['comment']
+            let temp_html = `<p>${comment}</p>`
+            $('#mycomment').append(temp_html)
+          }
+        }
+    });
+}
+
+function save_comment(){
+    let page_url = window.location.href
+    let url_list = page_url.split('/')
+    let id_val = url_list[url_list.length -1]
+
+    let comment = $('#comment').val()
+
+    $.ajax({
+        type: 'POST',
+        url: '/page/comment',
+        data: {id_give:id_val ,comment_give: comment},
+        success: function (response) {
+            alert(response['msg'])
+            window.location.reload()
+        }
+    })
+}
+function pagedata(id_val){
   $.ajax({
   type: "GET",
-  url: `/page1/persnal/${id_val}`,
+  url: `/page/persnal/${id_val}`,
   data: {},
   success: function (response) {
     let rows = response['member'][0]
@@ -109,41 +147,6 @@ $(document).ready(function(){
   }
 });
 
-  show_comment(id_val)
-});
-function show_comment(id_val){
-    $.ajax({
-        type: "GET",
-        url: `/page1/comment/${id_val}`,
-        data: {},
-        success: function (response) {
-          console.log(response)
-          rows = response['data']
-          for (let i = 0; i < rows.length; i++){
-            let comment = rows[i]['comment']
-            let temp_html = `<p>${comment}</p>`
-            $('#mycomment').append(temp_html)
-          }
-        }
-    });
-}
-
-function save_comment(){
-    let page_url = window.location.href
-    let url_list = page_url.split('/')
-    let id_val = url_list[url_list.length -1]
-
-    let comment = $('#comment').val()
-
-    $.ajax({
-        type: 'POST',
-        url: '/page1/comment',
-        data: {id_give:id_val ,comment_give: comment},
-        success: function (response) {
-            alert(response['msg'])
-            window.location.reload()
-        }
-    })
 }
 
 

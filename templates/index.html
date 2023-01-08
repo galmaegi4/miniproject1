@@ -75,7 +75,7 @@ get_id()
 function get_id(){
     $.ajax({
         type: "GET",
-        url: "/page1/id",
+        url: "/page/id",
         data: {},
         success: function (response) {
           rows = response['member']
@@ -83,37 +83,13 @@ function get_id(){
             let id = rows[i]['num']
             let name = rows[i]['name']
 
-            let temp_html = `<p><a onClick="location.href='http://192.168.0.128:5000/page1/${id}'">${name}의 페이지</a></p>`
+            let temp_html = `<p><a onClick="location.href='http://192.168.0.128:5000/page/${id}'">${name}의 페이지</a></p>`
 
             $('#team_list').append(temp_html)
           }
         }
     });
 }
-function sent_id(){
-      $.ajax({
-        type: "GET",
-        url: "/page1/id",
-        data: {},
-        success: function (response) {
-          rows = response['member']
-          for (let i = 0; i < rows.length; i++) {
-            let id = rows[i]['num']
-            let name = rows[i]['name']
-
-            let temp_html = `<p><a onClick="location.href='http://192.168.0.128:5000/page1/${id}'">${name}의 페이지</a></p>`
-
-            $('#team_list').append(temp_html)
-          }
-        }
-    });
-}
-
-
-
-
-
-
 </script>
 </head>
 <body>

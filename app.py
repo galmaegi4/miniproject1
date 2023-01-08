@@ -13,13 +13,13 @@ def home():
 def getmember():
     return render_template('member.html')
 
-@app.route('/page1/<id>')
+@app.route('/page/<id>')
 def getpage1(id):
-    return render_template('page1.html')
+    return render_template('page.html')
 
 
-@app.route("/page1/comment", methods=["POST"])
-def comment_post():
+@app.route("/page/comment", methods=["POST"])
+def save_comment():
     comment_receive = request.form['comment_give']
     id_receive = request.form['id_give']
     doc = {
@@ -29,13 +29,13 @@ def comment_post():
     db.comment.insert_one(doc)
     return jsonify({'msg': '저장 완료!'})
 
-@app.route("/page1/comment/<id>", methods=["GET"])
-def comment_get(id):
+@app.route("/page/comment/<id>", methods=["GET"])
+def show_comment(id):
     data_list = list(db.comment.find({'id_num':id},{'_id':False}))
     return jsonify({'data':data_list})
 
 @app.route("/member_list", methods=["POST"])
-def member_post():
+def join_team():
     name_receive = request.form['name_give']
     mbti_receive = request.form['mbti_give']
     blog_url_receive = request.form['blog_url_give']
@@ -58,12 +58,12 @@ def member_post():
     db.member.insert_one(doc)
     return jsonify({'msg': '저장 완료!'})
 
-@app.route("/page1/id", methods=["GET"])
+@app.route("/page/id", methods=["GET"])
 def id_get():
     member_list = list(db.member.find({},{'_id':False}))
     return jsonify({'member':member_list})
 
-@app.route("/page1/persnal/<id>", methods=["GET"])
+@app.route("/page/persnal/<id>", methods=["GET"])
 def page_go(id):
     member_list = list(db.member.find({'num':int(id)},{'_id':False}))
     return jsonify({'member':member_list})
